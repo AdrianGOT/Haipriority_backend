@@ -1,0 +1,261 @@
+import { Request, Response } from "express"; 
+import { ROLES } from "../../client/interfaces/client.interfaces";
+import { prismaCCard, prismaClient, prismaCreditCard } from "../../db";
+import { generateCardNumber } from "../../helpers/generateCardData";
+import { FRANCHISE } from "../../interfaces/card";
+
+
+export const getAllCreditCard = async(req: Request, res: Response) => {
+
+    // TODO create card interfaces 
+    const { client }  = req;
+    let cards;
+    
+    try {
+        
+        if(client?.roles.includes(ROLES.admin)){
+            cards = await prismaCreditCard.findMany();
+            
+            
+        }else if(client?.roles.includes(ROLES.user)){
+        
+            cards = await prismaCreditCard.findMany({
+                where: {clientId: client.id}
+            });            
+        }
+
+        return res.status(200).json({
+            ok: true,
+            cards
+        })
+    
+    
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            ok: true,
+            msg: "Ha ocurrido un error inesperado!" 
+        })      
+    }
+}
+
+export const createCreditCard = async(req: Request, res: Response) => {
+
+    const { client } = req;
+
+    const {
+        cvc,
+        cardName,
+        courtDate,
+        expirationDate,
+        paymentDate,
+        cardId,
+    } = req.body;
+    
+    try {
+        // if the client exist 
+        const clientDB = await prismaClient.findFirst({
+            where: {id: client?.id},
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                password: true,
+                createdAt: true,
+                state: true,
+                creditCards: true,
+                phoneNumber: true,
+            }
+        })
+    
+
+
+        if(!clientDB){
+            return res.status(404).json({
+                ok: false,
+                msg: "El cliente solicitado no existe"
+            })
+        }
+            
+        // if the card exist 
+        const cardDB = await prismaCCard.findFirst({
+            where: {id: cardId}
+        })
+
+        if(!cardDB){
+            return res.status(404).json({
+                ok: false,
+                msg: "la tarjeta modelo solicitada no existe"
+            })
+        }
+
+        // Check if the card number is not in the another card
+        const cardNumbersList = clientDB.creditCards.map(card => card.number)
+        const newNumberCard = generateCardNumber(cardNumbersList,cardDB.franchise as FRANCHISE )
+        const expDate = new Date(expirationDate);
+        
+        // create card
+        const newCreditCard = await prismaCreditCard.create({
+            data: {
+                cvc,
+                cardName,
+                number: newNumberCard,
+                expirationDate: expDate,
+                paymentDate,
+                courtDate,
+                card: {
+                    connect: {id: cardDB.id}
+                },
+                client: {
+                    connect: {id: clientDB.id}
+                }
+            }
+        })
+
+
+        return res.status(201).json({
+            ok: true,
+            msg: "se ha creado la tarjeta de credito satisfactoriamente!",
+            card: newCreditCard
+        })
+
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(500).json({
+            ok: false,
+            cards: "Ha ocurrido un error inesperado!"
+        })
+    }
+
+    
+
+}
+
+export const updateCreditCard = async(req: Request, res: Response) => {
+    
+    const { client } = req;
+    const id  = Number(req.params.id);
+
+    const {
+        cvc,
+        cardName,
+        expirationDate,
+        paymentDate,
+        courtDate } = req.body;
+    
+    try {
+        // Check if the client exists and that he has a credit card
+        const clientDB = await prismaClient.findFirst({
+            where: { id: client?.id},
+            select: {
+                creditCards: true
+            }
+        })
+
+        if(!clientDB){
+            return res.status(404).json({
+                ok: false,
+                msg: "El cliente no se encuentra registrado"
+            })
+        }
+
+        if(clientDB.creditCards.length === 0){
+            return res.status(400).json({
+                ok: false,
+                msg: "El cliente no posee tarjetas"
+            })
+        }
+
+        if(clientDB.creditCards.every(card=> card.id !== id)){
+            return res.status(404).json({
+                ok: false,
+                msg: "La tarjeta que deasea editar no existe"
+            })
+        }
+        
+        const expDate = new Date(expirationDate);
+
+        const cardUpdated = await prismaCreditCard.update({
+            where: {id},
+            data: {
+                cvc,
+                cardName,
+                expirationDate: expDate,
+                paymentDate,
+                courtDate
+            }
+        })
+
+        return res.status(200).json({
+            ok: true,
+            msg: "Se ha actualizado la tarjeta satisfactoriamente!",
+            card: cardUpdated
+        })
+
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(500).json({
+            ok: false,
+            msg: "Ha ocurrido un error inesperado"
+        })
+        
+    }
+
+}
+
+export const deleteCreditCard = async(req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const { client } = req;
+
+    try {
+        const clientDB = await prismaClient.findFirst({
+            where: { id: client?.id},
+            select: {
+                creditCards: true
+            }
+        })
+
+        if(!clientDB){
+            return res.status(404).json({
+                ok: false,
+                msg: "El cliente no se encuentra registrado"
+            })
+        }
+
+        if(clientDB.creditCards.length === 0){
+            return res.status(400).json({
+                ok: false,
+                msg: "El cliente no posee tarjetas"
+            })
+        }
+
+        if(!clientDB.creditCards.some(card=> card.id === id)){
+            return res.status(404).json({
+                ok: false,
+                msg: "La tarjeta que deasea eliminar no existe"
+            })
+        }
+
+        await prismaCreditCard.delete({
+            where: {id}
+        })
+
+        return res.status(200).json({
+            ok: true,
+            msg: "Se ha eliminado la tarjeta satisfactoriamente"
+        })
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(500).json({
+            ok: false,
+            cards: "Ha ocurrido un error inesperado"
+        })    
+    }
+    
+}
+
+

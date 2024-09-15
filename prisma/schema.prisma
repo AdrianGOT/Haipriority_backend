@@ -1,0 +1,135 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client{
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(20)
+  email       String     @db.VarChar(50) @unique
+  password    String     @db.VarChar(100)
+  createdAt   DateTime   @default(now())
+  state       Boolean    @default(true)
+  phoneNumber String 
+
+  creditCards CreditCard[]
+  debitCards  DebitCard[]
+  loans        Loan[]
+  
+  roles       RolesOnClients[]
+
+
+}
+
+model CreditCard_init{
+  id            Int @id @default(autoincrement())
+  type          String
+  amoutallowed  Float
+  franchise     String
+
+  credit_cards  CreditCard[]
+
+}
+
+model DebitCard_init{
+  id            Int @id @default(autoincrement())
+  type          String
+  franchise     String
+
+  debit_cards   DebitCard[]
+}
+
+model Loan_init{
+  id            Int @id @default(autoincrement())
+  title         String
+  amoutallowed  Float
+
+  loans         Loan[]
+}
+
+model CreditCard{
+  id              Int               @id @default(autoincrement())
+  number          String            @unique
+  cvc             Int               @db.SmallInt
+  current_amount  Float             @default(0)
+  cardName        String            @db.VarChar(20)
+  expirationDate  DateTime        
+  createdAt       DateTime          @default(now())
+  courtDate       Int
+  paymentDate     Int
+
+  card            CreditCard_init   @relation(fields: [cardId], references: [id])
+  cardId          Int
+
+  client          Client            @relation(fields: [clientId], references: [id])
+  clientId        Int
+}
+
+model DebitCard{
+  id              Int               @id @default(autoincrement())
+  number          String             
+  cvc             Int               @db.SmallInt
+  current_amount  Float             @default(0)
+  cardName        String            @db.VarChar(20)
+  createdAt       DateTime          @default(now())
+  expirationDate  DateTime
+  
+  card            DebitCard_init    @relation(fields: [cardId], references: [id])
+  cardId          Int
+
+  client          Client            @relation(fields: [clientId], references: [id])
+  clientId        Int
+
+}
+
+model Loan{
+  id              Int        @id @default(autoincrement())
+  current_amount  Float      @default(0)
+  createdAt       DateTime   @default(now())
+  limitDate       DateTime
+  
+  client          Client     @relation(fields: [clientId], references: [id])
+  clientId        Int
+
+  Loan_init       Loan_init  @relation(fields: [loanId], references: [id])   
+  loanId          Int
+}
+
+model Role{
+  id        Int        @id @default(autoincrement())
+  role      String     @db.VarChar(8)
+
+  clients     RolesOnClients[]
+}
+
+// model DebitCardOnClients{
+//   client         Client       @relation(fields: [clientId], references: [id]) 
+//   debitCard    DebitCard  @relation(fields: [debitCardId], references: [id]) 
+//   clientId       Int
+//   debitCardId  Int
+
+//   @@id([clientId, debitCardId])
+// }
+
+// model LoansOnClients{
+//   client         Client       @relation(fields: [clientId], references: [id]) 
+//   Loan         Loan       @relation(fields: [loanId], references: [id]) 
+//   clientId       Int
+//   loanId       Int 
+
+//   @@id([clientId, loanId])
+// }
+
+model RolesOnClients{
+  Client         Client       @relation(fields: [clientId], references: [id]) 
+  role         Role       @relation(fields: [roleId], references: [id]) 
+  clientId       Int
+  roleId       Int 
+
+  @@id([clientId, roleId])
+}
