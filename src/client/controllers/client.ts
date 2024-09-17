@@ -1,9 +1,9 @@
-import { response, request } from "express";
+import { response, request, Response, Request } from "express";
 import { prismaClient, prismaRole, prismaRoleClient } from "../../db";
 import { encrypt } from "../../helpers/handleBcrypt";
 import { ROLES } from "../interfaces/client.interfaces";
 
-export const getAllClients = async(req = request, res = response) => {
+export const getAllClients = async(req: Request, res: Response) => {
 
     try {
         const clients = await prismaClient.findMany({
@@ -41,14 +41,68 @@ export const getAllClients = async(req = request, res = response) => {
 
 }
 
-export const getClientById = (req = request, res = response) => {
+export const getClientInfo = async(req: Request, res: Response) => {
+    const { client } = req;
+    
+    try {
+        const clientDB = await prismaClient.findFirst({
+            where: {id: client?.id},
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+                state: true,
+                phoneNumber: true,
+                roles: {
+                    select:{
+                        role: {
+                            select:{
+                                role: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if(!clientDB){
+            return res.status(401).json({
+                ok: false,
+                msg: "No se ha encontrado registrado"
+            })
+        }
+
+        if(!clientDB.state){
+            return res.status(401).json({
+                ok: false,
+                msg: "No se encuentra activo"
+            })
+        }
+        
+        return res.status(200).json({
+            ok: true,
+            client: {...clientDB, roles: clientDB.roles.map(role => role.role.role)}
+        })
+
+    } catch (error) {
+        
+        return res.status(500).json({
+            ok: false,
+            msg: "Ha ocurrido un error inesperado"
+        })
+    }
+}
+
+export const getClientById = (req: Request, res: Response) => {
+    
     res.status(200).json({
         ok: true,
         cards: ["client one", "client two"]
     })
 }
 
-export const createClient = async(req = request, res = response) => {
+export const createClient = async(req: Request, res: Response) => {
     
     const {
         name, 
@@ -130,14 +184,14 @@ export const createClient = async(req = request, res = response) => {
     
 }
 
-export const updateClient = (req = request, res = response) => {
+export const updateClient = (req: Request, res: Response) => {
     res.status(200).json({
         ok: true,
         cards: "client updated"
     })
 }
 
-export const deleteClient = (req = request, res = response) => {
+export const deleteClient = (req: Request, res: Response) => {
     res.status(200).json({
         ok: true,
         cards: "client deleted"

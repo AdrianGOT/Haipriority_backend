@@ -20,10 +20,22 @@ export const getAllCreditCard = async(req: Request, res: Response) => {
         }else if(client?.roles.includes(ROLES.user)){
         
             cards = await prismaCreditCard.findMany({
-                where: {clientId: client.id}
+                where: {clientId: client.id},
+                select: {
+                    id: true,
+                    number: true,
+                    cvc: true,
+                    current_amount: true,
+                    cardName: true,
+                    expirationDate: true,
+                    createdAt: true,
+                    courtDate: true,
+                    paymentDate: true,
+                    card: true
+                }
             });            
         }
-
+        
         return res.status(200).json({
             ok: true,
             cards
@@ -41,7 +53,7 @@ export const getAllCreditCard = async(req: Request, res: Response) => {
 }
 
 export const createCreditCard = async(req: Request, res: Response) => {
-
+    
     const { client } = req;
 
     const {
@@ -105,7 +117,7 @@ export const createCreditCard = async(req: Request, res: Response) => {
                 paymentDate,
                 courtDate,
                 card: {
-                    connect: {id: cardDB.id}
+                    connect: {id: cardDB.id},
                 },
                 client: {
                     connect: {id: clientDB.id}
@@ -185,6 +197,18 @@ export const updateCreditCard = async(req: Request, res: Response) => {
                 expirationDate: expDate,
                 paymentDate,
                 courtDate
+            },
+            select: {
+                    id: true,
+                    number: true,
+                    cvc: true,
+                    current_amount: true,
+                    cardName: true,
+                    expirationDate: true,
+                    createdAt: true,
+                    courtDate: true,
+                    paymentDate: true,
+                    card: true
             }
         })
 

@@ -10,7 +10,6 @@ export const generateCardNumber =
         }
         
         let numberGenerated = getRandomInt(initialNumber);
-        console.log(numberGenerated, numberCardList);
         
         while(numberCardList.includes(numberGenerated)){
             numberGenerated = getRandomInt(initialNumber);

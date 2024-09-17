@@ -10,7 +10,7 @@ datasource db {
 
 model Client{
   id          Int        @id @default(autoincrement())
-  name        String     @db.VarChar(20)
+  name        String     @db.VarChar(100)
   email       String     @db.VarChar(50) @unique
   password    String     @db.VarChar(100)
   createdAt   DateTime   @default(now())
@@ -19,8 +19,7 @@ model Client{
 
   creditCards CreditCard[]
   debitCards  DebitCard[]
-  loans        Loan[]
-  
+  loans       Loan[]
   roles       RolesOnClients[]
 
 
@@ -68,7 +67,7 @@ model CreditCard{
 
   client          Client            @relation(fields: [clientId], references: [id])
   clientId        Int
-}
+} 
 
 model DebitCard{
   id              Int               @id @default(autoincrement())

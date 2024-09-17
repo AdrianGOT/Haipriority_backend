@@ -1,15 +1,17 @@
-import { request, response } from "express";
-import { tokenVerify } from "../../helpers/handleJwt";
+import { Request, Response } from "express";
 import { ROLES } from "../../client/interfaces/client.interfaces";
-import { Token } from "../../interfaces/token";
 
-export const getMenuInfo = async(req = request, res = response) => {
+interface ItemList {
+    path: string;
+    text: string;
+    selected: boolean
+}
 
-    const authoText = req.headers.authorization;
-    const token = authoText!.split(' ')[1]; 
-    const { roles } = (await tokenVerify(token)) as Token;
-    const menuList = getMenuListByRoles(roles)
+export const getMenuInfo = async(req: Request, res: Response) => {
     
+    const { client } = req;
+    const menuList = getMenuListByRoles(client?.roles || []);
+
     return res.status(200).json({
         ok: true,
         menuList
@@ -17,19 +19,40 @@ export const getMenuInfo = async(req = request, res = response) => {
 }
 
 const getMenuListByRoles = (roles: ROLES[]) => {
-    let menuList: string[];
+    let menuList: ItemList[];
 
     if(roles.includes(ROLES.user)) {
         menuList = USER_MENU_ITEMS
     }else if(roles.includes(ROLES.admin)){
-        menuList = [...USER_MENU_ITEMS, 'clients']
+        menuList = [...USER_MENU_ITEMS, ...ADMIN_ITEMS]
     }else menuList = []
 
     return menuList;
 }
 
 const USER_MENU_ITEMS = [
-    'credit-card',
-    'debit-card',
-    'loan'
+    
+    {
+        path: 'credit-card',
+        text: 'Tarjetas de credito',
+        selected: false
+    },
+    {
+        path: 'debit-card',
+        text: 'Tarjetas de debito',
+        selected: false
+    },
+    {
+        path: 'loan',
+        text: 'Prestamos',
+        selected: false
+    },
+] 
+
+const ADMIN_ITEMS = [
+    {
+        path: 'loan',
+        text: 'Prestamos',
+        selected: false
+    }
 ] 

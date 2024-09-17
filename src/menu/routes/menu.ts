@@ -10,6 +10,8 @@ import { validateToken } from "../../middlewares/checkJwt";
 
 const router = Router();
 
-router.get("/", [validateToken],getMenuInfo);
+router.get("/", [
+    validateToken
+],getMenuInfo);
 
 export default router;

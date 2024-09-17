@@ -7,7 +7,8 @@ import {
     updateClient, 
     createClient,
     deleteClient, 
-    getClientById
+    getClientById,
+    getClientInfo
 } from "../controllers/client";
 import { validateToken } from "../../middlewares/checkJwt";
 import { validateCreationClient } from "../validators/client";
@@ -20,6 +21,10 @@ router.get("/",
     getAllClients
 );
 
+router.get('/verify', [
+    validateToken
+],getClientInfo)
+
 router.get("/:id",
     [validateToken]
     ,getClientById
@@ -29,7 +34,7 @@ router.put("/:id",
     [validateToken]
     ,updateClient
 );
-router.delete("/id",
+router.delete("/:id",
     [validateToken],
     deleteClient
 );
@@ -37,5 +42,7 @@ router.delete("/id",
 router.post("/", [
     ...validateCreationClient
 ],createClient);
+
+
 
 export default router;

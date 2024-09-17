@@ -4,6 +4,7 @@ import { JwtPayload } from 'jsonwebtoken';
 
 export const validateToken = async(req: Request, res: Response, next: NextFunction) => {
     const authoText = req.headers.authorization;
+
     
     if(!authoText?.includes('Bearer')){
         return res.status(401).json({
@@ -21,6 +22,7 @@ export const validateToken = async(req: Request, res: Response, next: NextFuncti
             id: (tokenVerified as JwtPayload).id,
             roles: (tokenVerified as JwtPayload).roles
         }
+    
         next();
     } 
     else {
