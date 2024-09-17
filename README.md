@@ -1,0 +1,24 @@
+# My Bank App por Adrian Gonzalez Orobio ( Backend ) 
+
+A continuación se establecerán los pasos para poder correr la API REST
+
+## Requerimientos.
+Se debe contar con: 
+* PostgreSql 
+* Node version `20.15.1`
+
+## Pasos para la instalación del proyecto.
+1. **Clonar repositorio:** Se debe clonar el repositorio desde la página de github o tomando el siguiente enlace:  `https://github.com/AdrianGOT/Haipriority_backend.git` 
+    *  También se puede copiar el siguiente comando de consola para poder clocar el repositorio 
+  ``` git clone https://github.com/AdrianGOT/Haipriority_backend.git ```
+
+2. **Creación del archivo .env:** Dentro de este archivo se van a encontrar varialbes como: 
+    * **PORT:** Puerto donde va a ser escuchada la aplicación de Express, se debe colocar el puerto **3005**, ya que es este al que está apuntando el Proyecto de frontend.
+    * **JWT_SECRET_KEY:** Es la clave secreta necesaria para poder utilizar JWT para la creación y validación de tokens  
+    * **DATABASE_UR:L** Es el link que permitirá a la aplicación poder conectarse a la base de datos. El formato para este link es de 
+    `postgresql://user:password@localhost:5432/dbName?schema=public`
+3. **Instalar las dependencias necesarias:** Para instalar las dependencias se debe ejecutar el comando: `npm install`.
+4. **Migración de la base de datos:** Ejecutar `npx prisma migrate dev --name first` en el root del proyecto para crear las tablas y generar la semilla para los datos necesarios y los datos de prueba.
+
+## Ejecución del proyecto
+Ejecutar en el root del proyeto el comando `npm run dev` para comenzar. 
