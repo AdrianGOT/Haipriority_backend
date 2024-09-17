@@ -1,13 +1,17 @@
-import { response, request } from "express"; 
+import { response, request, Request, Response } from "express"; 
 import { prismaClient } from "../../db";
 import { compare } from "../../helpers/handleBcrypt";
 import { tokenSign } from "../../helpers/handleJwt";
 import { ClientIdNameRoles, ROLES } from "../../client/interfaces/client.interfaces";
-import { serialize } from "cookie";
 
-export const login = async(req = request, res = response) => {
+import fs from "fs";
+import { decodeEncrypt } from "../../keys/generateKeys";
+// import { decodeEncrypt } from "../../keys/generateKeys";
+
+export const login = async(req: Request, res: Response) => {
     
     const {email, password} = req.body;
+    const passwordDecoded = decodeEncrypt(password);
 
     try {
         const clientDB = await prismaClient.findFirst({ 
@@ -46,7 +50,7 @@ export const login = async(req = request, res = response) => {
             })
         }
 
-        const samePassword = await compare(password, clientDB.password);
+        const samePassword = await compare(passwordDecoded, clientDB.password);
 
         if(!samePassword){
             return res.status(401).json({
@@ -85,5 +89,24 @@ export const login = async(req = request, res = response) => {
     }
 }
 
+export const getPublicKey = async(req: Request, res: Response) => {
+    try {
+        const keyFilePath = process.env.PUBLIC_KEY_FILE_PATH;
+        const publicKeyByFile = fs.readFileSync(`${keyFilePath}`, "utf-8")
+
+        return res.status(200).json({
+            ok: true,
+            publicKey: `${publicKeyByFile}`
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: "Ha ocurrido un error inesperado!"
+        })
+    }
+
+}
 
 

@@ -17,8 +17,12 @@ Se debe contar con:
     
     * **JWT_SECRET_KEY:** Es la clave secreta necesaria para poder utilizar JWT para la creación y validación de tokens. Puede colocar texto aleatorio.
 
-    * **DATABASE_UR:L** Es el link que permitirá a la aplicación poder conectarse a la base de datos. El formato para este link es de 
+    * **DATABASE_URL:** Es el link que permitirá a la aplicación poder conectarse a la base de datos. El formato para este link es de 
     `postgresql://user:password@localhost:5432/dbName?schema=public`
+    * **PUBLIC_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave publica para encriptar los datos. Recomendación personal: `./src/keys/publicKey.pem`.
+    * **PRIVATE_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave privada para desencriptar los datos. Recomendación personal: `./src/keys/privateKey.pem`.
+   
+
 3. **Instalar las dependencias necesarias:** Para instalar las dependencias se debe ejecutar el comando: `npm install`.
 
 4. **Migración de la base de datos:** Ejecutar `npx prisma migrate dev --name first` en el root del proyecto para crear las tablas y generar la semilla para los datos necesarios y los datos de prueba.
