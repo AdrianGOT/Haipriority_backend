@@ -12,12 +12,15 @@ Se debe contar con:
     *  También se puede copiar el siguiente comando de consola para poder clocar el repositorio 
   ``` git clone https://github.com/AdrianGOT/Haipriority_backend.git ```
 
-2. **Creación del archivo .env:** Dentro de este archivo se van a encontrar varialbes como: 
+2. **Creación del archivo .env:** Dentro de este archivo se van a encontrar variables como: 
     * **PORT:** Puerto donde va a ser escuchada la aplicación de Express, se debe colocar el puerto **3005**, ya que es este al que está apuntando el Proyecto de frontend.
-    * **JWT_SECRET_KEY:** Es la clave secreta necesaria para poder utilizar JWT para la creación y validación de tokens  
+    
+    * **JWT_SECRET_KEY:** Es la clave secreta necesaria para poder utilizar JWT para la creación y validación de tokens. Puede colocar texto aleatorio.
+
     * **DATABASE_UR:L** Es el link que permitirá a la aplicación poder conectarse a la base de datos. El formato para este link es de 
     `postgresql://user:password@localhost:5432/dbName?schema=public`
 3. **Instalar las dependencias necesarias:** Para instalar las dependencias se debe ejecutar el comando: `npm install`.
+
 4. **Migración de la base de datos:** Ejecutar `npx prisma migrate dev --name first` en el root del proyecto para crear las tablas y generar la semilla para los datos necesarios y los datos de prueba.
 
 ## Ejecución del proyecto
