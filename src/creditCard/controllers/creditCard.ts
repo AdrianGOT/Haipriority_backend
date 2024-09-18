@@ -3,6 +3,7 @@ import { ROLES } from "../../client/interfaces/client.interfaces";
 import { prismaCCard, prismaClient, prismaCreditCard } from "../../db";
 import { generateCardNumber } from "../../helpers/generateCardData";
 import { FRANCHISE } from "../../interfaces/card";
+import { CreateCreditCard, CreditCardCompleted } from "../interfaces/creditCard";
 
 
 export const getAllCreditCard = async(req: Request, res: Response) => {
@@ -63,7 +64,7 @@ export const createCreditCard = async(req: Request, res: Response) => {
         expirationDate,
         paymentDate,
         cardId,
-    } = req.body;
+    } = req.body as CreateCreditCard;
     
     try {
         // if the client exist 
@@ -102,17 +103,19 @@ export const createCreditCard = async(req: Request, res: Response) => {
             })
         }
 
-        // Check if the card number is not in the another card
-        const cardNumbersList = clientDB.creditCards.map(card => card.number)
-        const newNumberCard = generateCardNumber(cardNumbersList,cardDB.franchise as FRANCHISE )
+        // Final validations 
+        const cardNumbersList = clientDB.creditCards.map((card) => card.number);
+        const newCardNumber = generateCardNumber(cardNumbersList, cardDB.franchise as FRANCHISE );
+        const newCardName = assigmentOfCardName(cardName);
         const expDate = new Date(expirationDate);
+        
         
         // create card
         const newCreditCard = await prismaCreditCard.create({
             data: {
                 cvc,
-                cardName,
-                number: newNumberCard,
+                cardName: newCardName, 
+                number: newCardNumber,
                 expirationDate: expDate,
                 paymentDate,
                 courtDate,
@@ -224,7 +227,7 @@ export const updateCreditCard = async(req: Request, res: Response) => {
         return res.status(500).json({
             ok: false,
             msg: "Ha ocurrido un error inesperado"
-        })
+        })  
         
     }
 
@@ -282,4 +285,19 @@ export const deleteCreditCard = async(req: Request, res: Response) => {
     
 }
 
-
+// Other functions 
+const assigmentOfCardName = (cardName: string): string => {
+    let newCardName = "";
+    
+    if(cardName.length > 20){
+        const cardNameSplitted = cardName.split(" ");
+        
+        for(const sliceOfName of cardNameSplitted){
+            const auxName = `${newCardName} ${sliceOfName}`;
+            if(auxName.length > 20) break;
+            newCardName = auxName;
+        }
+    }
+    
+    return newCardName || cardName;
+}

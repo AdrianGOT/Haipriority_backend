@@ -7,3 +7,6 @@ prisma/migrations
 #Los archivos para escribir las keys
 src/keys/privateKey.pem
 src/keys/publicKey.pem
+
+#Configuración de vsCode
+.vscode
