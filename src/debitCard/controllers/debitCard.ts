@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 import { prismaClient, prismaDCard, prismaDebitCard } from "../../db";
 import { ROLES } from "../../client/interfaces/client.interfaces";
-import { generateCardNumber } from "../../helpers/generateCardData";
+import { assigmentOfCardName, generateCardNumber } from "../../helpers/generateCardData";
 import { FRANCHISE } from "../../interfaces/card";
 
 
@@ -20,7 +20,17 @@ export const getAllDebitCard = async(req: Request, res: Response) => {
         }else if(client?.roles.includes(ROLES.user)){
         
             cards = await prismaDebitCard.findMany({
-                where: {clientId: client.id}
+                where: {clientId: client.id},
+                select: {
+                    id: true,
+                    cvc: true,
+                    number: true,
+                    cardName: true,
+                    createdAt: true,
+                    current_amount: true,
+                    expirationDate: true,
+                    card: true,
+                }
             });            
         }
 
@@ -85,12 +95,12 @@ export const createDebitCard = async(req: Request, res: Response) => {
         const cardNumbersList = clientDB.debitCards.map(card => card.number)
         const newNumberCard = generateCardNumber(cardNumbersList,cardDB.franchise as FRANCHISE )
         const expDate = new Date(expirationDate);
-        
+    
         // create card
         const newDebitCard = await prismaDebitCard.create({
             data: {
                 cvc,
-                cardName,
+                cardName: assigmentOfCardName(cardName),
                 number: newNumberCard,
                 expirationDate: expDate,
                 card: {
@@ -170,6 +180,16 @@ export const updateDebitCard = async(req: Request, res: Response) => {
                 cvc,
                 cardName,
                 expirationDate: expDate,
+            },
+            select: {
+                id: true,
+                cvc: true,
+                number: true,
+                cardName: true,
+                createdAt: true,
+                current_amount: true,
+                expirationDate: true,
+                card: true, 
             }
         })
 

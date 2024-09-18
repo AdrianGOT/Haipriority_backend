@@ -1,7 +1,7 @@
 import { Request, Response } from "express"; 
 import { ROLES } from "../../client/interfaces/client.interfaces";
 import { prismaCCard, prismaClient, prismaCreditCard } from "../../db";
-import { generateCardNumber } from "../../helpers/generateCardData";
+import { assigmentOfCardName, generateCardNumber } from "../../helpers/generateCardData";
 import { FRANCHISE } from "../../interfaces/card";
 import { CreateCreditCard, CreditCardCompleted } from "../interfaces/creditCard";
 
@@ -285,19 +285,3 @@ export const deleteCreditCard = async(req: Request, res: Response) => {
     
 }
 
-// Other functions 
-const assigmentOfCardName = (cardName: string): string => {
-    let newCardName = "";
-    
-    if(cardName.length > 20){
-        const cardNameSplitted = cardName.split(" ");
-        
-        for(const sliceOfName of cardNameSplitted){
-            const auxName = `${newCardName} ${sliceOfName}`;
-            if(auxName.length > 20) break;
-            newCardName = auxName;
-        }
-    }
-    
-    return newCardName || cardName;
-}
