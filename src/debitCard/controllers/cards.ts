@@ -66,7 +66,7 @@ export const updateCard = async(req: Request, res: Response) => {
     
     const { 
         franchise,
-        amoutallowed,
+        amountAllowed,
         type } = req.body;
         
      try {

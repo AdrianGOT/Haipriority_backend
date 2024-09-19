@@ -21,13 +21,13 @@ export const getAllCard = async(req: Request, res: Response) => {
 export const createCard = async(req: Request, res: Response) => {
 
     const { 
-        amoutallowed,
+        amountAllowed,
         franchise, 
         type } = req.body;
         
      try {
         const cardDB = await prismaCCard.findFirst({
-            where: { amoutallowed, franchise, type }
+            where: { amountAllowed, franchise, type }
         })
 
         if(cardDB){
@@ -39,7 +39,7 @@ export const createCard = async(req: Request, res: Response) => {
 
         const newCard = await prismaCCard.create({
             data: {
-                amoutallowed,
+                amountAllowed,
                 franchise,
                 type
             }
@@ -68,7 +68,7 @@ export const updateCard = async(req: Request, res: Response) => {
     
     const { 
         franchise,
-        amoutallowed,
+        amountAllowed,
         type } = req.body;
         
      try {
@@ -86,7 +86,7 @@ export const updateCard = async(req: Request, res: Response) => {
         const cardUpdate = await prismaCCard.update({
             where: {id},
             data: {
-                amoutallowed,
+                amountAllowed,
                 franchise,
                 type
             }

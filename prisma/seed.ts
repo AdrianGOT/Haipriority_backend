@@ -14,22 +14,22 @@ async function main(){
         data: [
             {
                 "type" : "Platinum",
-                "amoutallowed" : 2200000,
+                "amountAllowed" : 2200000,
                 "franchise" : "VISA"
             },
             {
                 "type" : "Clasic",
-                "amoutallowed" : 1200000,
+                "amountAllowed" : 1200000,
                 "franchise" : "VISA"
             },
             {
                 "type" : "Platinum",
-                "amoutallowed" : 500000,
+                "amountAllowed" : 500000,
                 "franchise" : "MASTER CARD"
             },
             {
                 "type" : "Clasic",
-                "amoutallowed" : 200000,
+                "amountAllowed" : 200000,
                 "franchise" : "MASTER CARD"
             },
         ]
@@ -56,6 +56,30 @@ async function main(){
         ]
     })
 
+    await prisma.loan_init.createMany({
+        data: [
+            {
+                title: "Credito de libre inversión",
+                amountAllowed: 10000000,
+                interest: 13,
+            },
+            {
+                title: "Credito educativo ",
+                amountAllowed: 40000000,
+                interest: 10,
+            },
+            {
+                title: "Prestamo hipotecario",
+                amountAllowed: 80000000,
+                interest: 15,
+            },
+            {
+                title: "Prestamo rotativo",
+                amountAllowed: 70000000,
+                interest: 8,
+            },
+        ]
+    })
     
     
 }

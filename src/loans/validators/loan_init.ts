@@ -11,7 +11,7 @@ export const validateCreateLoanInit = [
     check('title')
         .exists()
         .notEmpty(),
-    check('amoutallowed')
+    check('amountAllowed')
         .exists()
         .notEmpty()
         .isFloat(),
@@ -29,7 +29,7 @@ export const validateUpdateLoanInit = [
     check('title')
         .exists()
         .notEmpty(),
-    check('amoutallowed')
+    check('amountAllowed')
         .exists()
         .notEmpty()
         .isFloat(),

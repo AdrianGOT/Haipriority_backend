@@ -14,8 +14,7 @@ export const validateCreateLoan = [
         .isNumeric(),
     check('limitDate')
         .exists()
-        .notEmpty()
-        .isDate(),
+        .notEmpty(),
     check('loanId')
         .exists()
         .notEmpty(),

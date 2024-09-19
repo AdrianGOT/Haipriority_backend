@@ -6,7 +6,7 @@ export const validateCreationCard = [
     check('type')
         .exists()
         .notEmpty(),
-    check('amoutallowed')
+    check('amountAllowed')
         .exists()
         .notEmpty()
         .isNumeric(),
@@ -25,7 +25,7 @@ export const validateUpdatingCard = [
     check('type')
         .exists()
         .notEmpty(),
-    check('amoutallowed')
+    check('amountAllowed')
         .exists()
         .notEmpty()
         .isNumeric(),

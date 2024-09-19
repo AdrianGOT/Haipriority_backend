@@ -8,7 +8,16 @@ export const getAllLoan = async(req: Request, res: Response) => {
 
     try {
         const loans = await prismaLoan.findMany({
-            where: {clientId : client?.id }
+            where: {clientId : client?.id },
+            select: {
+                clientId: true,
+                createdAt:true,
+                current_amount:true,
+                id:true,
+                limitDate:true,
+                loanId: true,
+                loan_init: true
+            }
         });
         
         return res.status(200).json({
@@ -33,7 +42,7 @@ export const createLoan = async(req: Request, res: Response) => {
     const {
         current_amount,
         limitDate,
-        loanId
+        loanId,
     } = req.body;
 
     try {
@@ -61,16 +70,15 @@ export const createLoan = async(req: Request, res: Response) => {
             })
         }
 
-        const limitDateInDate = new Date(limitDate);
-
+        
         const loanCreated = await prismaLoan.create({
             data: {
-                current_amount, 
-                limitDate: limitDateInDate,
+                current_amount: Number(current_amount), 
+                limitDate,
                 client: {
                     connect: {id: client?.id}
                 },
-                Loan_init:{
+                loan_init:{
                     connect: {id: loanId}
                 }
             }
@@ -79,7 +87,7 @@ export const createLoan = async(req: Request, res: Response) => {
 
         return res.status(201).json({
             ok: true,
-            msg: "se ha creado el prestamo satisfactoriamente",
+            msg: "se le ha asignado el prestamo satisfactoriamente",
             loan: loanCreated
         })
 
@@ -102,7 +110,8 @@ export const updateLoan = async(req: Request, res: Response) => {
 
     const { 
         current_amount,
-        limitDate } = req.body;
+        limitDate 
+    } = req.body;
 
     try {
         const clientDB = await prismaClient.findFirst({

@@ -28,7 +28,7 @@ model Client{
 model CreditCard_init{
   id            Int @id @default(autoincrement())
   type          String
-  amoutallowed  Float
+  amountAllowed  Float
   franchise     String
 
   credit_cards  CreditCard[]
@@ -43,10 +43,11 @@ model DebitCard_init{
   debit_cards   DebitCard[]
 }
 
-model Loan_init{
+model loan_init{
   id            Int @id @default(autoincrement())
   title         String
-  amoutallowed  Float
+  amountAllowed  Float
+  interest      Int    
 
   loans         Loan[]
 }
@@ -90,12 +91,12 @@ model Loan{
   id              Int        @id @default(autoincrement())
   current_amount  Float      @default(0)
   createdAt       DateTime   @default(now())
-  limitDate       DateTime
+  limitDate       DateTime    
   
   client          Client     @relation(fields: [clientId], references: [id])
   clientId        Int
 
-  Loan_init       Loan_init  @relation(fields: [loanId], references: [id])   
+  loan_init       loan_init  @relation(fields: [loanId], references: [id])   
   loanId          Int
 }
 
@@ -125,9 +126,9 @@ model Role{
 // }
 
 model RolesOnClients{
-  Client         Client       @relation(fields: [clientId], references: [id]) 
+  Client       Client       @relation(fields: [clientId], references: [id]) 
   role         Role       @relation(fields: [roleId], references: [id]) 
-  clientId       Int
+  clientId     Int
   roleId       Int 
 
   @@id([clientId, roleId])

@@ -3,7 +3,7 @@ import { prismaLoaninit } from "../../db";
 
 
 export const getAllLoanInit = async(req: Request, res: Response) => {
-
+    
     try {
         
         const loans = await prismaLoaninit.findMany();
@@ -26,12 +26,14 @@ export const createLoanInit = async(req: Request, res: Response) => {
 
     const { 
         title,
-        amoutallowed } = req.body;
+        interest,
+        amountAllowed
+     } = req.body;
 
     try {
 
         const loanDB = await prismaLoaninit.findFirst({
-            where: {title, amoutallowed}
+            where: {title, amountAllowed, interest}
         })
 
         if(loanDB){
@@ -42,7 +44,11 @@ export const createLoanInit = async(req: Request, res: Response) => {
         }
 
         const loanCreated = await prismaLoaninit.create({
-            data: {title, amoutallowed}
+            data: {
+                title, 
+                amountAllowed, 
+                interest
+            }
         })
 
         return res.status(200).json({
@@ -68,7 +74,9 @@ export const updateLoanInit = async(req: Request, res: Response) => {
  
     const { 
         title,
-        amoutallowed } = req.body;
+        interest,
+        amountAllowed,
+     } = req.body;
     
         try {
 
@@ -85,7 +93,11 @@ export const updateLoanInit = async(req: Request, res: Response) => {
 
             const loanUpdated = await prismaLoaninit.update({
                 where: { id },
-                data: { title, amoutallowed }
+                data: { 
+                    title, 
+                    interest,
+                    amountAllowed,
+                }
             })
 
             return res.status(200).json({
