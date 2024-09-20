@@ -220,7 +220,9 @@ export const updateClient = async(req: Request, res: Response) => {
             phoneNumber: phoneNumber
         }
 
-        if(password) infoToUdated["password"] = password;
+        if(password){
+            infoToUdated["password"] = await encrypt( password );
+        }
 
         const clientUpdated = await prismaClient.update({
             where: {id: clientId},
