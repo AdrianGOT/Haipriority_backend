@@ -3,6 +3,13 @@ import { prismaClient, prismaRole, prismaRoleClient } from "../../db";
 import { encrypt } from "../../helpers/handleBcrypt";
 import { ROLES } from "../interfaces/client.interfaces";
 
+interface ClientInfoUpdated {
+    name        : string;
+    email       : string;
+    password?   : string;
+    phoneNumber : string;
+}
+
 export const getAllClients = async(req: Request, res: Response) => {
 
     try {
@@ -184,11 +191,76 @@ export const createClient = async(req: Request, res: Response) => {
     
 }
 
-export const updateClient = (req: Request, res: Response) => {
-    res.status(200).json({
-        ok: true,
-        cards: "client updated"
-    })
+export const updateClient = async(req: Request, res: Response) => {
+
+    const clientId  = Number(req.params.id);
+    const {
+        name,
+        email,
+        phoneNumber,
+        password
+    } = req.body;
+
+    try {
+
+        const clientDB = await prismaClient.findFirst({
+            where: {id: clientId}
+        })
+
+        if(!clientDB){
+            return res.status(404).json({
+                ok: false,
+                msg: "No se ha encontrado al cliente solicitado"
+            })
+        }
+
+        const infoToUdated: ClientInfoUpdated = {
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber
+        }
+
+        if(password) infoToUdated["password"] = password;
+
+        const clientUpdated = await prismaClient.update({
+            where: {id: clientId},
+            data: infoToUdated,
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+                state: true,
+                phoneNumber: true,
+                roles: {
+                    select:{
+                        role: {
+                            select:{
+                                role: true
+                            }
+                        }
+                    }
+                }
+            }
+
+        })
+
+        return res.status(200).json({
+            ok: true,
+            msg: "Se ha actualizado el cliente satisfactoriamente",
+            client: {...clientUpdated, roles: clientUpdated.roles.map(role => role.role.role)}
+                
+            
+        })
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(500).json({
+            ok: false,
+            msg: "Ha ocurrido un error inesperado"
+        })
+    }
+
 }
 
 export const deleteClient = (req: Request, res: Response) => {

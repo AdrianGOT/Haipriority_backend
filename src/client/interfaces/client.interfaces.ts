@@ -15,6 +15,7 @@ export interface Client extends InitClient{
     loans?:        string;
 }
 
+export type ClientUpdate = Pick<InitClient, "email" |"name" | "phoneNumber" > 
 export type ClientIdNameRoles = Pick<Client, "id" | "name" | "roles">;
 
 export enum ROLES {
