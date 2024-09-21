@@ -15,7 +15,18 @@ export const getAllDebitCard = async(req: Request, res: Response) => {
     try {
         
         if(client?.roles.includes(ROLES.admin)){
-            cards = await prismaDebitCard.findMany();
+            cards = await prismaDebitCard.findMany({
+                select: {
+                    id: true,
+                    cvc: true,
+                    number: true,
+                    cardName: true,
+                    createdAt: true,
+                    current_amount: true,
+                    expirationDate: true,
+                    card: true,
+                }
+            });
             
         }else if(client?.roles.includes(ROLES.user)){
         

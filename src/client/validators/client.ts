@@ -36,3 +36,16 @@ export const validateUpdatingClient = [
         checkResult(req, res, next);
     }
 ]
+
+export const validateUpdatingClientState = [
+    check('id')
+        .exists()
+        .notEmpty(),
+    check('stateTo')
+        .exists()
+        .notEmpty()
+        .isBoolean(),
+    (req: Request, res: Response, next: NextFunction) => {
+        checkResult(req, res, next);
+    }
+]

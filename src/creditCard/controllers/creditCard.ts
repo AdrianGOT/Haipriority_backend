@@ -15,7 +15,20 @@ export const getAllCreditCard = async(req: Request, res: Response) => {
     try {
         
         if(client?.roles.includes(ROLES.admin)){
-            cards = await prismaCreditCard.findMany();
+            cards = await prismaCreditCard.findMany({
+                select: {
+                    id: true,
+                    number: true,
+                    cvc: true,
+                    current_amount: true,
+                    cardName: true,
+                    expirationDate: true,
+                    createdAt: true,
+                    courtDate: true,
+                    paymentDate: true,
+                    card: true
+                }
+            });
             
             
         }else if(client?.roles.includes(ROLES.user)){

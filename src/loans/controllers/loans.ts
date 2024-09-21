@@ -1,5 +1,6 @@
 import { Request, Response } from "express"; 
 import { prismaClient, prismaLoan, prismaLoaninit } from "../../db";
+import { ROLES } from "../../client/interfaces/client.interfaces";
 
 
 export const getAllLoan = async(req: Request, res: Response) => {
@@ -7,18 +8,35 @@ export const getAllLoan = async(req: Request, res: Response) => {
     const { client } = req;
 
     try {
-        const loans = await prismaLoan.findMany({
-            where: {clientId : client?.id },
-            select: {
-                clientId: true,
-                createdAt:true,
-                current_amount:true,
-                id:true,
-                limitDate:true,
-                loanId: true,
-                loan_init: true
-            }
-        });
+        let loans;
+
+        if(client?.roles.includes(ROLES.admin)){
+            loans = prismaLoan.findMany({
+                select: {
+                    clientId: true,
+                    createdAt:true,
+                    current_amount:true,
+                    id:true,
+                    limitDate:true,
+                    loanId: true,
+                    loan_init: true
+                }
+            });
+        }else if(client?.roles.includes(ROLES.user)){
+            loans = await prismaLoan.findMany({
+                where: {clientId : client?.id },
+                select: {
+                    clientId: true,
+                    createdAt:true,
+                    current_amount:true,
+                    id:true,
+                    limitDate:true,
+                    loanId: true,
+                    loan_init: true
+                }
+            });
+        }
+
         
         return res.status(200).json({
             ok: true,

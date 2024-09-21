@@ -2,6 +2,7 @@ import { response, request, Response, Request } from "express";
 import { prismaClient, prismaRole, prismaRoleClient } from "../../db";
 import { encrypt } from "../../helpers/handleBcrypt";
 import { ROLES } from "../interfaces/client.interfaces";
+import { decodeEncrypt } from "../../keys/generateKeys";
 
 interface ClientInfoUpdated {
     name        : string;
@@ -18,7 +19,6 @@ export const getAllClients = async(req: Request, res: Response) => {
                 id: true,
                 name: true,
                 email: true,
-                password: true,
                 createdAt: true,
                 state: true,
                 phoneNumber: true,
@@ -30,7 +30,7 @@ export const getAllClients = async(req: Request, res: Response) => {
                             }
                         }
                     }
-                }
+                },
             }
         });
 
@@ -117,6 +117,8 @@ export const createClient = async(req: Request, res: Response) => {
         password, 
         phoneNumber} = req.body;
     
+    const passwordDecoded = decodeEncrypt(password);
+
 
     try {
         const clientDB  = await prismaClient.findFirst({
@@ -133,7 +135,7 @@ export const createClient = async(req: Request, res: Response) => {
         // Esto es para determinar a quien se le coloca el rol de admin
         const role = email.toLowerCase().includes("admin")? ROLES.admin : ROLES.user;
 
-        const passwordEncrypted = await encrypt( password );
+        const passwordEncrypted = await encrypt( passwordDecoded );
 
         const clientCreated = await prismaClient.create({
             data: {
@@ -221,7 +223,8 @@ export const updateClient = async(req: Request, res: Response) => {
         }
 
         if(password){
-            infoToUdated["password"] = await encrypt( password );
+            const passwordDecoded = decodeEncrypt(password);
+            infoToUdated["password"] = await encrypt( passwordDecoded );
         }
 
         const clientUpdated = await prismaClient.update({
@@ -265,9 +268,46 @@ export const updateClient = async(req: Request, res: Response) => {
 
 }
 
-export const deleteClient = (req: Request, res: Response) => {
+export const deleteClient = async(req: Request, res: Response) => {
     res.status(200).json({
         ok: true,
         cards: "client deleted"
     })
+}
+
+export const updateState = async(req: Request, res: Response) => {
+    
+    const { stateTo } = req.body;
+    const clientId  = Number(req.params.id);
+
+    try {
+
+        const clientDB = await prismaClient.findFirst({
+            where: {id: clientId}
+        })
+
+        if(!clientDB){
+            return res.status(404).json({
+                ok: false, 
+                msg: "El cliente buscado no se encuentra registrado"
+            })
+        }
+
+        await prismaClient.update({
+            where: {id: clientId},
+            data: {state: stateTo}
+        })
+
+        return res.status(200).json({
+            ok: true, 
+            msg: "Se ha actualizado el estado del cliente satisfactoriamente"
+        })
+    } catch (error) {
+
+        console.log(error);
+        return res.status(500).json({
+            ok: false, 
+            msg: "Ha ocurrido un error inesperado"
+        })
+    }
 }

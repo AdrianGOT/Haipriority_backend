@@ -8,10 +8,13 @@ import {
     createClient,
     deleteClient, 
     getClientById,
-    getClientInfo
+    getClientInfo,
+    updateState
 } from "../controllers/client";
 import { validateToken } from "../../middlewares/checkJwt";
-import { validateCreationClient } from "../validators/client";
+import { validateCreationClient, validateUpdatingClientState } from "../validators/client";
+import { checkRole } from "../../middlewares/checkRole";
+import { ROLES } from "../interfaces/client.interfaces";
 
 
 const router = Router();
@@ -43,6 +46,10 @@ router.post("/", [
     ...validateCreationClient
 ],createClient);
 
-
+router.patch("/state/:id", [
+    validateToken,
+    checkRole([ROLES.admin]),
+    ...validateUpdatingClientState
+], updateState)
 
 export default router;

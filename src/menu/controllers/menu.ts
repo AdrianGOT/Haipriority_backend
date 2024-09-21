@@ -51,8 +51,8 @@ const USER_MENU_ITEMS = [
 
 const ADMIN_ITEMS = [
     {
-        path: 'loan',
-        text: 'Prestamos',
+        path: 'client',
+        text: 'Clientes',
         selected: false
     }
 ] 
