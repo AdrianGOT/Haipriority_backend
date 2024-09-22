@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ClientIdNameRoles } from "../client/interfaces/client.interfaces";
+import { ClientIdNameRoles } from "../modules/client/interfaces/client.interfaces";
 
 export const tokenSign = async(payload: ClientIdNameRoles) => {
     const secret = process.env.JWT_SECRET_KEY as string;

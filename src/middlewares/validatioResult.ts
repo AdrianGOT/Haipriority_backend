@@ -8,7 +8,8 @@ export const checkResult =
         const err = validationResult(req);
         
         if(!err.isEmpty()){
-        
+            console.log(err);
+            
             return res.status(403).json({
                 ok: false,
                 errors: err.mapped(),

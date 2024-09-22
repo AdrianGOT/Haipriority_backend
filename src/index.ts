@@ -1,18 +1,19 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
+import cors         from "cors";
+import helmet       from "helmet";
+import dotenv       from "dotenv";
+import express      from "express";
 import cookieParser from "cookie-parser";
-import helmet from "helmet";
 
 // Routers 
-import authRoutes from "./auth/routes/auth";
-import creditCardRoutes from "./creditCard/routes/creditCard";
-import debitCardRoutes from "./debitCard/routes/debitCard";
-import loanRoutes from "./loans/routes/loan";
-import clientRoutes from "./client/routes/client";
-import menuRoutes from './menu/routes/menu';
+import menuRoutes       from './modules/menu/routes/menu';
+import authRoutes       from "./modules/auth/routes/auth";
+import loanRoutes       from "./modules/loans/routes/loan";
+import configRoutes     from "./modules/config/routes/config";
+import clientRoutes     from "./modules/client/routes/client";
+import debitCardRoutes  from "./modules/debitCard/routes/debitCard";
+import creditCardRoutes from "./modules/creditCard/routes/creditCard";
 
-import { managementPairKeys } from "./keys/generateKeys";
+import { managementPairKeys } from "./keys/managementKeys";
 
 
 // ========= Initial configurations ========= 
@@ -28,12 +29,13 @@ dotenv.config();
 const PORT = process.env.PORT || 3002;
 
 // ========= Routes =========
-app.use('/api/auth', authRoutes);
-app.use('/api/credit-card', creditCardRoutes );
-app.use('/api/debit-card', debitCardRoutes);
-app.use('/api/loans', loanRoutes);
-app.use('/api/client', clientRoutes);
-app.use('/api/main', menuRoutes);
+app.use('/api/auth',authRoutes);
+app.use('/api/main',menuRoutes);
+app.use('/api/loans',loanRoutes);
+app.use('/api/client',clientRoutes);
+app.use('/api/config',configRoutes);
+app.use('/api/credit-card',creditCardRoutes );
+app.use('/api/debit-card',debitCardRoutes);
     
 
 // --------- Listen ---------

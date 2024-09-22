@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ROLES } from "../client/interfaces/client.interfaces";
+import { ROLES } from "../modules/client/interfaces/client.interfaces";
 
 export const checkRole = (roles: ROLES[]) =>  (req: Request, res: Response, next: NextFunction) => {
     const { client } = req;

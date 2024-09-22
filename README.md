@@ -21,6 +21,7 @@ Se debe contar con:
     `postgresql://user:password@localhost:5432/dbName?schema=public`
     * **PUBLIC_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave publica para encriptar los datos. Recomendación personal: `./src/keys/publicKey.pem`.
     * **PRIVATE_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave privada para desencriptar los datos. Recomendación personal: `./src/keys/privateKey.pem`.
+    * **FRONT_PUBLIC_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave publica que va a ser enviada desde el front para encriptar los datos enviados desde el backend. Recomendación personal: `./src/keys/frontPublicKey.pem`.
    
 
 3. **Instalar las dependencias necesarias:** Para instalar las dependencias se debe ejecutar el comando: `npm install`.
