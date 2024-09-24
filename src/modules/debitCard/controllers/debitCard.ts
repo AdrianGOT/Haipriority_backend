@@ -4,7 +4,7 @@ import { prismaClient, prismaDCard, prismaDebitCard } from "../../../db";
 import { ROLES } from "../../client/interfaces/client.interfaces";
 import { assigmentOfCardName, generateCardNumber } from "../../../helpers/generateCardData";
 import { FRANCHISE } from "../../../interfaces/card";
-import { encryptListOfCards } from "../../../helpers/encryptData";
+import { encryptingOneCard, encryptListOfCards } from "../../../helpers/encryptData";
 
 
 export const getAllDebitCard = async(req: Request, res: Response) => {
@@ -125,11 +125,17 @@ export const createDebitCard = async(req: Request, res: Response) => {
             }
         })
 
+        const cardNumberEncrypted = encryptingOneCard(newDebitCard.number);
+        const cardCvcEncrypted = encryptingOneCard(newDebitCard.cvc);
 
         return res.status(201).json({
             ok: true,
             msg: "se ha creado la tarjeta de credito satisfactoriamente!",
-            card: newDebitCard
+            card: {
+                ...newDebitCard,
+                number: cardNumberEncrypted,
+                cvc: Number(cardCvcEncrypted),
+            }
         })
 
     } catch (error) {
@@ -206,10 +212,17 @@ export const updateDebitCard = async(req: Request, res: Response) => {
             }
         })
 
+        const cardNumberEncrypted = encryptingOneCard(cardUpdated.number);
+        const cardCvcEncrypted = encryptingOneCard(cardUpdated.cvc);
+
         return res.status(200).json({
             ok: true,
             msg: "Se ha actualizado la tarjeta satisfactoriamente!",
-            card: cardUpdated
+            card: {
+                ...cardUpdated,
+                number: cardNumberEncrypted,
+                cvc: Number(cardCvcEncrypted),
+            }
         })
 
     } catch (error) {

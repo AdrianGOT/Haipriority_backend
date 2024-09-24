@@ -5,7 +5,7 @@ import { assigmentOfCardName, generateCardNumber } from "../../../helpers/genera
 import { FRANCHISE } from "../../../interfaces/card";
 import { CreateCreditCard, CreditCard, CreditCardCompleted } from "../interfaces/creditCard";
 
-import { encryptListOfCards } from "../../../helpers/encryptData";
+import { encryptingOneCard, encryptListOfCards } from "../../../helpers/encryptData";
 
 export const getAllCreditCard = async(req: Request, res: Response) => {
 
@@ -146,11 +146,18 @@ export const createCreditCard = async(req: Request, res: Response) => {
             }
         })
 
+        const cardNumberEncrypted = encryptingOneCard(newCreditCard.number);
+        const cardCvcEncrypted = encryptingOneCard(newCreditCard.cvc);
+
 
         return res.status(201).json({
             ok: true,
             msg: "se ha creado la tarjeta de credito satisfactoriamente!",
-            card: newCreditCard
+            card: {
+                ...newCreditCard,
+                cvc: cardCvcEncrypted,
+                number: cardNumberEncrypted,
+            }
         })
 
     } catch (error) {
@@ -233,10 +240,17 @@ export const updateCreditCard = async(req: Request, res: Response) => {
             }
         })
 
+        const cardNumberEncrypted = encryptingOneCard(cardUpdated.number);
+        const cardCvcEncrypted = encryptingOneCard(cardUpdated.cvc);
+
         return res.status(200).json({
             ok: true,
             msg: "Se ha actualizado la tarjeta satisfactoriamente!",
-            card: cardUpdated
+            card: {
+                ...cardUpdated,
+                cvc: cardCvcEncrypted,
+                number: cardNumberEncrypted,
+            }
         })
 
     } catch (error) {

@@ -23,10 +23,23 @@ export const encryptListOfCards= (cards: CreditCard[] | any[]) => {
             cvc: cvcEncoded,
         }
     })
-
 }
 
-export const encryptData = (text: string, iv: Buffer, secretKey: Buffer ) => {
+export const encryptingOneCard = (card: CreditCard | any ) => {
+    const secretKey = fs.readFileSync(`${frontKeyPath}`);
+    const iv = fs.readFileSync(`${frontIvPath}`);
+
+    const numberEncoded = encryptData(card.number, iv, secretKey);        
+    const cvcEncoded = encryptData(`${card.cvc}`, iv, secretKey);       
+
+    return {
+        ...card,
+        cvc: cvcEncoded,
+        numeber: numberEncoded,
+    }
+}
+
+const encryptData = (text: string, iv: Buffer, secretKey: Buffer ) => {
     const dataInBytes = naclUtil.decodeUTF8(text);
     const dataEncoded = nacl.secretbox(dataInBytes, iv, secretKey); 
     return naclUtil.encodeBase64(dataEncoded)
