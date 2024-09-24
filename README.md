@@ -14,9 +14,7 @@ Se debe contar con:
 
 2. **Creación del archivo .env:** Dentro de este archivo se van a encontrar variables como: 
     * **PORT:** Puerto donde va a ser escuchada la aplicación de Express, se debe colocar el puerto **3005**, ya que es este al que está apuntando el Proyecto de frontend.
-    
     * **JWT_SECRET_KEY:** Es la clave secreta necesaria para poder utilizar JWT para la creación y validación de tokens. Puede colocar texto aleatorio.
-
     * **DATABASE_URL:** Es el link que permitirá a la aplicación poder conectarse a la base de datos. El formato para este link es de 
     `postgresql://user:password@localhost:5432/dbName?schema=public`
     * **PUBLIC_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave publica para encriptar los datos. Recomendación personal: `./src/keys/publicKey.pem`.
