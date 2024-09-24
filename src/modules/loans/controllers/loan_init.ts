@@ -54,7 +54,7 @@ export const createLoanInit = async(req: Request, res: Response) => {
         return res.status(200).json({
             ok: true,
             msg: "Se ha creado el prestamo modelo satisfactoriamente",
-            loanCreated
+            loan: loanCreated
         })
 
     } catch (error) {

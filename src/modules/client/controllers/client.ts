@@ -271,8 +271,7 @@ export const updateClient = async(req: Request, res: Response) => {
 export const deleteClient = async(req: Request, res: Response) => {
     
     const id = Number(req.params.id);
-    console.log(id);
-
+    
     try {
         const clientDB = await prismaClient.findFirst({
             where: {id},
@@ -286,7 +285,7 @@ export const deleteClient = async(req: Request, res: Response) => {
         }
 
         await prismaClient.delete({ where: {id} })
-        
+
         return res.status(200).json({
             ok: true,
             msg: "El cliente ha sido eliminado satisfactoriamente!"
