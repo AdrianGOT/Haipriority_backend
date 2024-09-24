@@ -92,6 +92,7 @@ export const login = async(req: Request, res: Response) => {
 export const getPublicKey = async(req: Request, res: Response) => {
     try {
         const keyFilePath = process.env.PUBLIC_KEY_FILE_PATH;
+        
         const publicKeyByFile = fs.readFileSync(`${keyFilePath}`, "utf-8")
 
         return res.status(200).json({

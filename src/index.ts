@@ -13,7 +13,7 @@ import clientRoutes     from "./modules/client/routes/client";
 import debitCardRoutes  from "./modules/debitCard/routes/debitCard";
 import creditCardRoutes from "./modules/creditCard/routes/creditCard";
 
-import { managementPairKeys } from "./keys/managementKeys";
+import { generateKeyToSendFront, managementPairKeys } from './keys/managementKeys';
 
 
 // ========= Initial configurations ========= 
@@ -41,5 +41,6 @@ app.use('/api/debit-card',debitCardRoutes);
 // --------- Listen ---------
 app.listen(PORT, () =>{
     managementPairKeys();
+    generateKeyToSendFront();
     console.log(`Running the app in ${PORT} port`);
 })

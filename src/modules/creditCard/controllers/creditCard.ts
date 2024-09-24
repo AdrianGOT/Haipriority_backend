@@ -3,18 +3,26 @@ import { ROLES } from "../../client/interfaces/client.interfaces";
 import { prismaCCard, prismaClient, prismaCreditCard } from "../../../db";
 import { assigmentOfCardName, generateCardNumber } from "../../../helpers/generateCardData";
 import { FRANCHISE } from "../../../interfaces/card";
-import { CreateCreditCard, CreditCardCompleted } from "../interfaces/creditCard";
+import { CreateCreditCard, CreditCard, CreditCardCompleted } from "../interfaces/creditCard";
+import fs from 'fs';
 
+const frontKeyPath = process.env.SECRET_KEY_PATH;
+const frontIvPath = process.env.SECRET_IV_PATH;
+
+import nacl from 'tweetnacl';
+import * as naclUtil from 'tweetnacl-util';
+import { encryptData } from "../../../keys/managementKeys";
 
 export const getAllCreditCard = async(req: Request, res: Response) => {
 
-    // TODO create card interfaces 
     const { client }  = req;
+    const isAdmin = client?.roles.includes(ROLES.admin);
+    const isClient = client?.roles.includes(ROLES.user); 
     let cards;
     
     try {
         
-        if(client?.roles.includes(ROLES.admin)){
+        if(isAdmin){
             cards = await prismaCreditCard.findMany({
                 select: {
                     id: true,
@@ -26,15 +34,16 @@ export const getAllCreditCard = async(req: Request, res: Response) => {
                     createdAt: true,
                     courtDate: true,
                     paymentDate: true,
-                    card: true
+                    card: true,
+                    cardId: true
                 }
             });
             
             
-        }else if(client?.roles.includes(ROLES.user)){
+        }else if(isClient){
         
             cards = await prismaCreditCard.findMany({
-                where: {clientId: client.id},
+                where: {clientId: client?.id},
                 select: {
                     id: true,
                     number: true,
@@ -50,9 +59,11 @@ export const getAllCreditCard = async(req: Request, res: Response) => {
             });            
         }
         
+        const cardsWithInfoEncrypted = encryptListOfCards(cards as CreditCard[])
+
         return res.status(200).json({
             ok: true,
-            cards
+            cards: cardsWithInfoEncrypted
         })
     
     
@@ -296,5 +307,24 @@ export const deleteCreditCard = async(req: Request, res: Response) => {
         })    
     }
     
+}
+
+// =============== functions ===============
+const encryptListOfCards= (cards: CreditCard[]) => {
+
+    const secretKey = fs.readFileSync(`${frontKeyPath}`);
+    const iv = fs.readFileSync(`${frontIvPath}`);
+
+    return cards.map(card => {
+        
+        const numberEncoded = encryptData(card.number, iv, secretKey);        
+        const cvcEncoded = encryptData(`${card.cvc}`, iv, secretKey);        
+        return {
+            ...card,
+            number: numberEncoded,
+            cvc: cvcEncoded,
+        }
+    })
+
 }
 

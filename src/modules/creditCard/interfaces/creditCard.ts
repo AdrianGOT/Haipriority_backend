@@ -13,3 +13,9 @@ export interface CreditCardCompleted extends CreateCreditCard{
     id: number,
     card: Card,
 }
+
+export interface CreditCard extends CreditCardCompleted{
+    number         : string;
+    createdAt      : Date
+    current_amount : number;
+}
