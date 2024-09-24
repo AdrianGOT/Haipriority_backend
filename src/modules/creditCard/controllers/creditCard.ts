@@ -4,14 +4,8 @@ import { prismaCCard, prismaClient, prismaCreditCard } from "../../../db";
 import { assigmentOfCardName, generateCardNumber } from "../../../helpers/generateCardData";
 import { FRANCHISE } from "../../../interfaces/card";
 import { CreateCreditCard, CreditCard, CreditCardCompleted } from "../interfaces/creditCard";
-import fs from 'fs';
 
-const frontKeyPath = process.env.SECRET_KEY_PATH;
-const frontIvPath = process.env.SECRET_IV_PATH;
-
-import nacl from 'tweetnacl';
-import * as naclUtil from 'tweetnacl-util';
-import { encryptData } from "../../../keys/managementKeys";
+import { encryptListOfCards } from "../../../helpers/encryptData";
 
 export const getAllCreditCard = async(req: Request, res: Response) => {
 
@@ -308,23 +302,3 @@ export const deleteCreditCard = async(req: Request, res: Response) => {
     }
     
 }
-
-// =============== functions ===============
-const encryptListOfCards= (cards: CreditCard[]) => {
-
-    const secretKey = fs.readFileSync(`${frontKeyPath}`);
-    const iv = fs.readFileSync(`${frontIvPath}`);
-
-    return cards.map(card => {
-        
-        const numberEncoded = encryptData(card.number, iv, secretKey);        
-        const cvcEncoded = encryptData(`${card.cvc}`, iv, secretKey);        
-        return {
-            ...card,
-            number: numberEncoded,
-            cvc: cvcEncoded,
-        }
-    })
-
-}
-

@@ -2,7 +2,6 @@ import fs from "fs";
 import crypto from "crypto";
 
 import nacl from 'tweetnacl';
-import * as naclUtil from 'tweetnacl-util';
 
 const publicKeyFilePath = process.env.PUBLIC_KEY_FILE_PATH;
 const privateKeyFilePath = process.env.PRIVATE_KEY_FILE_PATH;
@@ -89,14 +88,11 @@ export const saveFrontPublicKey = (publicKey: string) => {
 
 }
 
+
+
+
 const saveKeyInAFile = (key: string, path: string) => {
     fs.writeFile(`${path}`, key, (err) => {
         if(err) throw err;
     } )
-}
-
-export const encryptData = (text: string, iv: Buffer, secretKey: Buffer ) => {
-    const dataInBytes = naclUtil.decodeUTF8(text);
-    const dataEncoded = nacl.secretbox(dataInBytes, iv, secretKey); 
-    return naclUtil.encodeBase64(dataEncoded)
 }

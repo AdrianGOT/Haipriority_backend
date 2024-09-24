@@ -8,6 +8,8 @@ prisma/migrations
 src/keys/privateKey.pem
 src/keys/publicKey.pem
 src/keys/frontPublicKey.pem
+src/keys/frontKey.txt
+src/keys/ivKey.txt
 
 #Configuración de vsCode
 .vscode

@@ -4,6 +4,7 @@ import { prismaClient, prismaDCard, prismaDebitCard } from "../../../db";
 import { ROLES } from "../../client/interfaces/client.interfaces";
 import { assigmentOfCardName, generateCardNumber } from "../../../helpers/generateCardData";
 import { FRANCHISE } from "../../../interfaces/card";
+import { encryptListOfCards } from "../../../helpers/encryptData";
 
 
 export const getAllDebitCard = async(req: Request, res: Response) => {
@@ -44,10 +45,11 @@ export const getAllDebitCard = async(req: Request, res: Response) => {
                 }
             });            
         }
-
+        const cardsWithInfoEncrypted = encryptListOfCards(cards as any[])
+        
         return res.status(200).json({
             ok: true,
-            cards
+            cards: cardsWithInfoEncrypted
         })
     
     
