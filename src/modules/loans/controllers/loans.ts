@@ -11,7 +11,7 @@ export const getAllLoan = async(req: Request, res: Response) => {
         let loans;
 
         if(client?.roles.includes(ROLES.admin)){
-            loans = prismaLoan.findMany({
+            loans = await prismaLoan.findMany({
                 select: {
                     clientId: true,
                     createdAt:true,
@@ -19,7 +19,12 @@ export const getAllLoan = async(req: Request, res: Response) => {
                     id:true,
                     limitDate:true,
                     loanId: true,
-                    loan_init: true
+                    loan_init: true,
+                    client: {
+                        select: {
+                            name: true
+                        }
+                    }
                 }
             });
         }else if(client?.roles.includes(ROLES.user)){
@@ -35,8 +40,7 @@ export const getAllLoan = async(req: Request, res: Response) => {
                     loan_init: true
                 }
             });
-        }
-
+        }        
         
         return res.status(200).json({
             ok: true,
@@ -77,6 +81,14 @@ export const createLoan = async(req: Request, res: Response) => {
             })
         }
 
+        if(clientDB.loans.some( loan => 
+            loan.limitDate === limitDate && loan.loanId === loanId )){
+                return res.status(409).json({
+                    ok: false,
+                    msg: "Ya cuenta con un prestamo igual"
+                })
+            }
+
         const loandInitDB = await prismaLoaninit.findFirst({
             where: {id: loanId}
         })
@@ -87,7 +99,6 @@ export const createLoan = async(req: Request, res: Response) => {
                 msg: "El prestamo modelo relacionado no existe en la base de datos"
             })
         }
-
         
         const loanCreated = await prismaLoan.create({
             data: {
