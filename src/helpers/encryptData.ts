@@ -25,18 +25,13 @@ export const encryptListOfCards= (cards: CreditCard[] | any[]) => {
     })
 }
 
-export const encryptingOneCard = (card: CreditCard | any ) => {
+export const encryptingOneCard = (text: string ) => {
     const secretKey = fs.readFileSync(`${frontKeyPath}`);
     const iv = fs.readFileSync(`${frontIvPath}`);
 
-    const numberEncoded = encryptData(card.number, iv, secretKey);        
-    const cvcEncoded = encryptData(`${card.cvc}`, iv, secretKey);       
+    const textDecoded = encryptData(text, iv, secretKey);        
 
-    return {
-        ...card,
-        cvc: cvcEncoded,
-        numeber: numberEncoded,
-    }
+    return textDecoded;
 }
 
 const encryptData = (text: string, iv: Buffer, secretKey: Buffer ) => {

@@ -147,7 +147,7 @@ export const createCreditCard = async(req: Request, res: Response) => {
         })
 
         const cardNumberEncrypted = encryptingOneCard(newCreditCard.number);
-        const cardCvcEncrypted = encryptingOneCard(newCreditCard.cvc);
+        const cardCvcEncrypted = encryptingOneCard(`${newCreditCard.cvc}`);
 
 
         return res.status(201).json({
@@ -241,7 +241,7 @@ export const updateCreditCard = async(req: Request, res: Response) => {
         })
 
         const cardNumberEncrypted = encryptingOneCard(cardUpdated.number);
-        const cardCvcEncrypted = encryptingOneCard(cardUpdated.cvc);
+        const cardCvcEncrypted = encryptingOneCard(`${cardUpdated.cvc}`);
 
         return res.status(200).json({
             ok: true,
