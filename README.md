@@ -22,7 +22,9 @@ Se debe contar con:
     * **PUBLIC_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave publica para encriptar los datos. Recomendación personal: `./src/keys/publicKey.pem`.
     * **PRIVATE_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave privada para desencriptar los datos. Recomendación personal: `./src/keys/privateKey.pem`.
     * **FRONT_PUBLIC_KEY_FILE_PATH:** Esta variable sirve para poder determinar donde se va a guardar la llave publica que va a ser enviada desde el front para encriptar los datos enviados desde el backend. Recomendación personal: `./src/keys/frontPublicKey.pem`.
-   
+    * **ALGORITHM_ENCODE_SECRET_KEY:** variable encargada de contener el algoritmo para cifrar la información sensible de las tarjetas de credito y de debito. Se utiliza `aes-256-cbc`
+    * **SECRET_KEY_PATH:** Variables que determina la ubicación para guardar la secret key para poder encriptar los datos sensibles de las tarjetas de credito y debito. Recomendación: `'./src/keys/frontkey.txt'`
+    * **SECRET_IV_PATH:** Variables que determina la ubicación para guardar la iv(initial vector) para poder encriptar los datos sensibles de las tarjetas de credito y debito. Recomendación: `'./src/keys/ivKey.txt'`
 
 3. **Instalar las dependencias necesarias:** Para instalar las dependencias se debe ejecutar el comando: `npm install`.
 
