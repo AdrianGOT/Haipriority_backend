@@ -12,7 +12,7 @@ import {
     updateState
 } from "../controllers/client";
 import { validateToken } from "../../../middlewares/checkJwt";
-import { validateCreationClient, validateUpdatingClientState } from "../validators/client";
+import { validateClientId, validateCreationClient, validateUpdatingClient, validateUpdatingClientState } from "../validators/client";
 import { checkRole } from "../../../middlewares/checkRole";
 import { ROLES } from "../interfaces/client.interfaces";
 
@@ -33,13 +33,16 @@ router.get("/:id",
     ,getClientById
 );
 
-router.put("/:id",
-    [validateToken]
-    ,updateClient
+router.put("/:id",[
+    validateToken,
+    ...validateUpdatingClient
+    ],updateClient
 );
-router.delete("/:id",
-    [validateToken],
-    deleteClient
+
+router.delete("/:id",[
+    validateToken,
+    ...validateClientId
+], deleteClient
 );
     
 router.post("/", [

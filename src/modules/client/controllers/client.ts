@@ -269,10 +269,38 @@ export const updateClient = async(req: Request, res: Response) => {
 }
 
 export const deleteClient = async(req: Request, res: Response) => {
-    res.status(200).json({
-        ok: true,
-        cards: "client deleted"
-    })
+    
+    const id = Number(req.params.id);
+    console.log(id);
+
+    try {
+        const clientDB = await prismaClient.findFirst({
+            where: {id},
+        })
+    
+        if(!clientDB){
+            return res.status(404).json({
+                ok: false,
+                msg: "El cliente no existe"
+            })
+        }
+
+        await prismaClient.delete({ where: {id} })
+        
+        return res.status(200).json({
+            ok: true,
+            msg: "El cliente ha sido eliminado satisfactoriamente!"
+        })
+    } catch (error) {
+
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: "Ha ocurrido un error inesperado"
+        })
+
+    }
+
 }
 
 export const updateState = async(req: Request, res: Response) => {

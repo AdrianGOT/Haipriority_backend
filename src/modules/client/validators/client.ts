@@ -49,3 +49,12 @@ export const validateUpdatingClientState = [
         checkResult(req, res, next);
     }
 ]
+
+export const validateClientId = [
+    check('id')
+        .exists()
+        .notEmpty(),
+    (req: Request, res: Response, next: NextFunction) => {
+        checkResult(req, res, next);
+    }
+]
