@@ -107,7 +107,12 @@ export const createDebitCard = async(req: Request, res: Response) => {
         // Check if the card number is not in the another card
         const cardNumbersList = clientDB.debitCards.map(card => card.number)
         const newNumberCard = generateCardNumber(cardNumbersList,cardDB.franchise as FRANCHISE )
-        const expDate = new Date(expirationDate);
+        const epxDateSplitted = expirationDate.toString().split("-");
+        const expDate = new Date(
+            Number(epxDateSplitted[0]), 
+            Number(epxDateSplitted[1]), 
+            Number(epxDateSplitted[2])
+        );
     
         // create card
         const newDebitCard = await prismaDebitCard.create({

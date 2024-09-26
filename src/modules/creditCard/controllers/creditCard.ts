@@ -125,7 +125,13 @@ export const createCreditCard = async(req: Request, res: Response) => {
         const cardNumbersList = clientDB.creditCards.map((card) => card.number);
         const newCardNumber = generateCardNumber(cardNumbersList, cardDB.franchise as FRANCHISE );
         const newCardName = assigmentOfCardName(cardName);
-        const expDate = new Date(expirationDate);
+
+        const epxDateSplitted = expirationDate.toString().split("-");
+        const expDate = new Date(
+            Number(epxDateSplitted[0]), 
+            Number(epxDateSplitted[1]), 
+            Number(epxDateSplitted[2])
+        );
         
         
         // create card
