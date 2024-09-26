@@ -6,7 +6,6 @@ import { ClientIdNameRoles, ROLES } from "../../client/interfaces/client.interfa
 
 import fs from "fs";
 import { decodeEncrypt } from "../../../keys/managementKeys";
-// import { decodeEncrypt } from "../../keys/generateKeys";
 
 export const login = async(req: Request, res: Response) => {
     

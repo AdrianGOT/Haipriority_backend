@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { saveFrontPublicKey } from "../../../keys/managementKeys";
 import fs from 'fs';
 
 const frontKeyPath = process.env.SECRET_KEY_PATH;

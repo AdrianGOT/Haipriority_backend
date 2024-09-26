@@ -3,13 +3,11 @@ import crypto from "crypto";
 
 import nacl from 'tweetnacl';
 
-const publicKeyFilePath = process.env.PUBLIC_KEY_FILE_PATH;
-const privateKeyFilePath = process.env.PRIVATE_KEY_FILE_PATH;
-const frontPublicKeyFilePath = process.env.FRONT_PUBLIC_KEY_FILE_PATH;
-const frontKeyPath = process.env.SECRET_KEY_PATH;
-const frontIvPath = process.env.SECRET_IV_PATH;
-
 const checkKeyFilesExist = (): boolean => {
+
+    const publicKeyFilePath = process.env.PUBLIC_KEY_FILE_PATH;
+    const privateKeyFilePath = process.env.PRIVATE_KEY_FILE_PATH;
+    
     const existPublicFile = fs.existsSync(`${publicKeyFilePath}`);
     const existPrivateFile = fs.existsSync(`${privateKeyFilePath}`);
     
@@ -35,6 +33,7 @@ const checkKeyFilesExist = (): boolean => {
 } 
 
 export const decodeEncrypt = (dataEncrypted: string) => {
+    const privateKeyFilePath = process.env.PRIVATE_KEY_FILE_PATH;
 
     const bufferEncryptedData = Buffer.from(dataEncrypted, 'base64');
     const privateKey = fs.readFileSync(`${privateKeyFilePath}`, "utf-8");
@@ -68,6 +67,9 @@ export const managementPairKeys = () => {
         }
     })
 
+    const publicKeyFilePath = process.env.PUBLIC_KEY_FILE_PATH;
+    const privateKeyFilePath = process.env.PRIVATE_KEY_FILE_PATH;
+    
     // Save the keys in files .pem
     saveKeyInAFile(publicKey, publicKeyFilePath!);
     saveKeyInAFile(privateKey, privateKeyFilePath!);
@@ -78,16 +80,12 @@ export const generateKeyToSendFront = () => {
     const secretKey = nacl.randomBytes(32); // Generar una clave de 256 bits
     const iv = nacl.randomBytes(24); // Vector de inicialización
     
+    const frontKeyPath = process.env.SECRET_KEY_PATH;
+    const frontIvPath = process.env.SECRET_IV_PATH;
+
     fs.writeFileSync(`${frontKeyPath}`, secretKey);
     fs.writeFileSync(`${frontIvPath}`, iv );
 }
-
-export const saveFrontPublicKey = (publicKey: string) => {
-    saveKeyInAFile(publicKey, frontPublicKeyFilePath!);
-    console.log("The front publickey file had been created successfully")   
-
-}
-
 
 
 

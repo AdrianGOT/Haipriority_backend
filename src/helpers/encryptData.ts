@@ -4,11 +4,13 @@ import { CreditCard } from '../modules/creditCard/interfaces/creditCard';
 import nacl from 'tweetnacl';
 import * as naclUtil from 'tweetnacl-util';
 
-const frontKeyPath = process.env.SECRET_KEY_PATH;
-const frontIvPath = process.env.SECRET_IV_PATH;
+
 
 
 export const encryptListOfCards= (cards: CreditCard[] | any[]) => {
+
+    const frontKeyPath = process.env.SECRET_KEY_PATH;
+    const frontIvPath = process.env.SECRET_IV_PATH;
 
     const secretKey = fs.readFileSync(`${frontKeyPath}`);
     const iv = fs.readFileSync(`${frontIvPath}`);
@@ -26,6 +28,9 @@ export const encryptListOfCards= (cards: CreditCard[] | any[]) => {
 }
 
 export const encryptingOneCard = (text: string ) => {
+    const frontKeyPath = process.env.SECRET_KEY_PATH;
+    const frontIvPath = process.env.SECRET_IV_PATH;
+    
     const secretKey = fs.readFileSync(`${frontKeyPath}`);
     const iv = fs.readFileSync(`${frontIvPath}`);
 
